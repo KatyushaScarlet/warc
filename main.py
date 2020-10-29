@@ -1,25 +1,45 @@
 import sys
 import os
 import shutil
+import time
 from process.process import preProcessing
 from indexing.indexing import indexing
 from query.query import query
-path = 'output_htmls'
-if not os.path.exists(path):
-    os.makedirs(path)
+from process.process import parsing
+from query.query import query_bs
 
 
-def main():
+def create():
+    tStart = time.time()
+    # time.sleep(2)
     input_file = sys.argv[1]
-    print("Start ......")
-    print("Parsing HTML ......")
-    print("Dumping ......")
-    dictList = preProcessing(input_file)
-    x=indexing(dictList)
-    print("Finish !!!")
-    query(x[0],x[1],x[2])
-    shutil.rmtree(path)
+    print ("Start ......")
+    print ("Parsing HTML ......")
+    print ("Dumping ......")
+    index = preProcessing(input_file)
+    dictList = parsing(index)
+    indexing(dictList)
+    print ("Finish !!!")
+    tEnd = time.time()
+    print ("It cost %f sec" % (tEnd - tStart))
 
 
 if __name__ == "__main__":
-    main()
+    doc_id = 0
+    if "-c" in sys.argv:
+        create()
+    elif "-s" in sys.argv:
+        if not os.path.isfile("output.dict") or not os.path.isfile("page.total"):
+            print ("Error: Can not dict file ! ")
+            exit(1)
+        else:
+            query()
+    elif "-bs" in sys.argv:
+        if not os.path.isfile("output.dict") or not os.path.isfile("page.total"):
+            print ("Error: Can not dict file ! ")
+            exit(1)
+        else:
+            query_bs()
+    else:
+        print ("Error: Please use -c or -s to run ! ")
+        exit(1)

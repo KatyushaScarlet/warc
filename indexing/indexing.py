@@ -1,12 +1,9 @@
-#import pprint
 import json
-
-terms = {}
-amount = {}
 
 
 def indexing(dictList):
-    finalOutput = ""
+    terms = {}
+    test = {}
     doc_i = 0
     for v in dictList:
         for word in v:
@@ -18,29 +15,20 @@ def indexing(dictList):
                 i for i, e in enumerate(v) if e == word]
         doc_i = doc_i+1
 
-    for word in terms:
-        amount[word] = 0
-        for docid in terms[word]:
-            amount[word] = amount[word]+1
-
     for word in sorted(terms):
-        testOutput = word+","+str(amount[word])+":<"
-        for docid in sorted(terms[word]):
-            testOutput = testOutput+"doc"+str(int(docid)+1)+","
-            testOutput = testOutput+str(len(terms[word][docid]))+":<"+str(
-                terms[word][docid]).replace("[", "").replace("]", "")+">;"
-        testOutput = testOutput+">;"
-        finalOutput = finalOutput + testOutput+"\n"
-        # print testOutput
+        test[word] = {}
+        test[word]["df"] = len(terms[word])
+        for i in sorted(terms[word]):
+            test[word][i] = {}
+            test[word][i]["pos"] = terms[word][i]
+            test[word][i]["tf"] = len(terms[word][i])
 
-    #json_object = json.dumps(terms, indent=4)
-    # print(json_object)
-    output = "\n".join("{}\t{}".format(k, v) for k, v in terms.items())
-    output.replace("{", "<")
-    output.replace("}", ">")
-   # print output
+    json_object = json.dumps(test, indent=2, sort_keys=True)
+
     f = open("output.dict", "w")
-    f.write(finalOutput)
+    f.write(json_object)
     f.close()
-    
-    return terms,amount,doc_i
+
+    hama = open("page.total", "w")
+    hama.write(str(doc_i))
+    hama.close()
