@@ -1,4 +1,4 @@
-# warc tool (IR homework)
+# Fall_2020_IR_Final_WARC
 
 ## Note
 Coz the warc package only supports Python 2.7 and is no longer maintained, you need Python 2.7 to run warc tool. 
